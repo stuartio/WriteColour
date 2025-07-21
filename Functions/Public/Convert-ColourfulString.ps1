@@ -9,65 +9,59 @@ function Convert-ColourfulString {
     Process {
         $e = [char]0x1b
         $Reset = "$e[0m"
-        # Parse Input and extract colours
-        $ColourPattern = '\|(#?[a-z0-9,]+)( [bfiuBrhs]+)?\|'
+        $Separator = " "
+        
+        # Begin by removing end values
         $ParsedInput = $InputObject
-        # Replace closing tag with reset
         $ParsedInput = $ParsedInput.Replace('|!|', $Reset)
+        
+        # Parse Input and extract colours
+        $ColourPattern = '\|([^\|]+)\|'
     
+        # Find colour matches
         $ColourMatches = $ParsedInput | Select-String -Pattern $ColourPattern -AllMatches
     
         if ($ColourMatches) {
-            Write-Debug "Convert-ColouredString: Found $($ColourMatches.Matches.count) matches"
+            Write-Debug "Convert-ColourfulString: Found $($ColourMatches.Matches.count) matches"
             $ColourMatches.Matches | ForEach-Object {
+                Write-Debug "Parsing colour match $($_.Value)"
                 $Value = $_.Value
-                $Colour = $_.Groups[1].Value
-                if ($_.Groups[2]) {
-                    $Flags = $_.Groups[2].Value.Trim()
+                $ColourMatch = $_.Groups[1].Value
+                $Foreground = $null
+                $Background = $null
+                $Flags = $null
+
+                # Split value into components
+                $ColourComponents = $ColourMatch.Split($Separator)
+                Write-Debug "Found $($ColourComponents.count) components"
+
+                # Identify format of foreground, which is required
+                $Foreground = Get-RGB -Colour $ColourComponents[0]
+
+                # Check additional elements to identify background and flags
+                if ($ColourComponents.Count -eq 3) {
+                    $Background = Get-RGB -Colour $ColourComponents[1]
+                    $Flags = $ColourComponents[2]
                 }
-    
-                # Colour is RGB
-                if ($Colour -Match '[0-9]{1,3},[0-9]{1,3},[0-9]{1,3}') {
-                    Write-Debug "Convert-ColouredString: $Colour is RGB"
-                    $RGB = $Colour.split(',')
-                    $R = $RGB[0]
-                    $G = $RGB[1]
-                    $B = $RGB[2]
-                }
-    
-                # Colour is Hex
-                elseif ($Colour -match '#?[a-fA-F0-9]{6}') {
-                    Write-Debug "Convert-ColouredString: $Colour is hex"
-                    if ($Colour.StartsWith('#')) {
-                        $Colour = $Colour.Substring(1)
-                    }
-                    $RHex = $Colour.Substring(0, 2)
-                    $GHex = $Colour.Substring(2, 2)
-                    $BHex = $Colour.Substring(4, 2)
-    
-                    $R = [int] "0x$RHex"
-                    $G = [int] "0x$GHex"
-                    $B = [int] "0x$BHex"
-                }
-    
-                # Check colours list
                 else {
-                    if ($null -ne $Colours.$Colour) {
-                        Write-Debug "Convert-ColouredString: $Colour is in datastore"
-                        $R = $Colours.$Colour.red
-                        $G = $Colours.$Colour.green
-                        $B = $Colours.$Colour.blue
-                    }
-                    else {
-                        Write-Warning "Convert-ColouredString: Could not parse colour $Colour"
+                    $Background = Get-RGB -Colour $ColourComponents[1]
+                    if ($null -eq $Background) {
+                        Write-Debug "Using 2nd element as flags"
+                        $Flags = $ColourComponents[1]
                     }
                 }
     
-                $FormattedValue = "$e[38;2;$R;$G;$B"
+                # ---- Process foreground
+                $FormattedValue = "$e[38;2;$($Foreground.red);$($Foreground.green);$($Foreground.blue)"
     
-                # Add flags, if any
+                # ---- Add background
+                if ($Background) {
+                    $FormattedValue += ";48;2;$($Background.red);$($Background.green);$($Background.blue)"
+                }
+
+                # ---- Add flags, if any
                 if ($Flags) {
-                    Write-Debug "Convert-ColouredString: Flags = $Flags"
+                    Write-Debug "Convert-ColourfulString: Flags = $Flags"
                     $FlagsArray = $Flags.ToCharArray()
                     foreach ($Flag in $FlagsArray) {
                         switch -CaseSensitive ($Flag) {
@@ -93,7 +87,7 @@ function Convert-ColourfulString {
             return $ParsedInput
         }
         else {
-            Write-Warning "Convert-ColouredString: Found no colour matches"
+            Write-Warning "Convert-ColourfulString: Found no colour matches"
             return $InputObject
         }
     }

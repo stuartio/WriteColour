@@ -7,7 +7,7 @@ function Write-ColourfulHost {
     )
 
     Process {
-        $ColouredString = Convert-ColouredString $InputObject
+        $ColouredString = Convert-ColourfulString $InputObject
         Write-Output $ColouredString
     }
 }
