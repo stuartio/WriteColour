@@ -1,4 +1,4 @@
-function Convert-ColourfulString {
+function Convert-ColourString {
     [CmdletBinding()]
     Param(
         [Parameter(Mandatory)]
@@ -39,16 +39,16 @@ function Convert-ColourfulString {
                 $Foreground = Get-RGB -Colour $ColourComponents[0]
 
                 # Check additional elements to identify background and flags
-                if ($ColourComponents.Count -eq 3) {
-                    $Background = Get-RGB -Colour $ColourComponents[1]
-                    $Flags = $ColourComponents[2]
-                }
-                else {
+                if ($ColourComponents.Count -eq 2) {
                     $Background = Get-RGB -Colour $ColourComponents[1]
                     if ($null -eq $Background) {
                         Write-Debug "Using 2nd element as flags"
                         $Flags = $ColourComponents[1]
                     }
+                }
+                elseif ($ColourComponents.Count -eq 3) {
+                    $Background = Get-RGB -Colour $ColourComponents[1]
+                    $Flags = $ColourComponents[2]
                 }
     
                 # ---- Process foreground
@@ -82,6 +82,9 @@ function Convert-ColourfulString {
     
                 # Update input string with formatted value
                 $ParsedInput = $ParsedInput.Replace($Value, $FormattedValue)
+
+                # Add trailing reset, just in case
+                $ParsedInput += $Reset
             }
     
             return $ParsedInput

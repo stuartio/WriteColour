@@ -69,7 +69,7 @@ Description = 'Extension to Write-Output, Write-Host etc. to include colours inl
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Convert-ColourfulString', 'Write-ColourfulHost', 
+FunctionsToExport = 'Get-RGB', 'Convert-ColourfulString', 'Write-Colour', 
                'Write-ColourfulOutput'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

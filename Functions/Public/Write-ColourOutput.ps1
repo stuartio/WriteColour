@@ -1,4 +1,4 @@
-function Write-ColourfulHost {
+function Write-ColourOutput {
     [CmdletBinding()]
     Param(
         [Parameter(Mandatory)]
