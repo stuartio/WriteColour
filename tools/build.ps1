@@ -25,7 +25,7 @@ $ModuleFile = Get-ChildItem $ModuleDirectory/*.psm1
 $DataFile = Get-ChildItem $ModuleDirectory/*.psd1
 Import-Module $ModuleFile -Force
     
-$PS1Files = Get-ChildItem -Path $ModuleDirectory/Functions/ -Recurse -Filter *.ps1
+$PS1Files = Get-ChildItem -Path $ModuleDirectory/Functions/Public -Recurse -Filter *.ps1
 $Aliases = New-Object -TypeName System.Collections.ArrayList
 foreach ($File in $PS1Files) {
     try {

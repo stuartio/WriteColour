@@ -9,7 +9,7 @@ Input string to convert
 Convert-ColourString "Hello, my name is |red|Inigo Montoya|!|"
 #>
 function Convert-ColourString {
-    [Alias('Convert-ColorfulString')]
+    [Alias('Convert-ColorString')]
     [CmdletBinding()]
     Param(
         [Parameter(Mandatory)]
