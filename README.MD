@@ -1,6 +1,6 @@
 # Write Colour
 
-This module contains functions to perform Write-Host and Write-Output actions using colours and other rich-text features.
+This module contains functions to perform Write-Host and Write-Output actions using colours and other rich-text features. Function names use the UK spelling of `colour` by default, but aliases are included for the US-English `color`.
 
 ## Installation
 
