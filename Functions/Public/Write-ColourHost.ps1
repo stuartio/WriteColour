@@ -1,4 +1,5 @@
 function Write-ColourHost {
+    [Alias('Write-ColorHost')]
     [CmdletBinding()]
     Param(
         [Parameter(Mandatory)]
@@ -7,7 +8,7 @@ function Write-ColourHost {
     )
 
     Process {
-        $ColourfulInput = Convert-ColourfulString $InputObject
+        $ColourfulInput = Convert-ColourString $InputObject
         Write-Host -Object $ColourfulInput
     }
 }

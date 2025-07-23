@@ -1,4 +1,5 @@
 function Convert-ColourString {
+    [Alias('Convert-ColorfulString')]
     [CmdletBinding()]
     Param(
         [Parameter(Mandatory)]
@@ -35,20 +36,35 @@ function Convert-ColourString {
                 $ColourComponents = $ColourMatch.Split($Separator)
                 Write-Debug "Found $($ColourComponents.count) components"
 
-                # Identify format of foreground, which is required
-                $Foreground = Get-RGB -Colour $ColourComponents[0]
+                # If single element then check between either foreground colour or flags
+                if ($ColourComponents.Count -eq 1) {
+                    $Foreground = Get-RGB -Colour $ColourComponents[0]
+                    if ($null -eq $Foreground) {
+                        Write-Debug "Using single element as flags"
+                        $Flags = $ColourComponents[0]
+                    }
+                }
 
-                # Check additional elements to identify background and flags
-                if ($ColourComponents.Count -eq 2) {
+                # If 2 elements, then assume the first is the foreground, the 2nd can be either background or flags
+                elseif ($ColourComponents.Count -eq 2) {
+                    $Foreground = Get-RGB -Colour $ColourComponents[0]
                     $Background = Get-RGB -Colour $ColourComponents[1]
                     if ($null -eq $Background) {
                         Write-Debug "Using 2nd element as flags"
                         $Flags = $ColourComponents[1]
                     }
                 }
+
+                # If 3 elements, then 1st is foreground, 2nd is background, 3rd is flags
                 elseif ($ColourComponents.Count -eq 3) {
+                    $Foreground = Get-RGB -Colour $ColourComponents[0]
                     $Background = Get-RGB -Colour $ColourComponents[1]
                     $Flags = $ColourComponents[2]
+                }
+
+                # Otherwise panic
+                else {
+                    Write-Warning "Convert-ColourString: Prefix string is malformed"
                 }
     
                 # ---- Process foreground

@@ -1,4 +1,5 @@
 function Write-ColourOutput {
+    [Alias('Write-ColorOutput')]
     [CmdletBinding()]
     Param(
         [Parameter(Mandatory)]
@@ -7,7 +8,7 @@ function Write-ColourOutput {
     )
 
     Process {
-        $ColouredString = Convert-ColourfulString $InputObject
+        $ColouredString = Convert-ColourString $InputObject
         Write-Output $ColouredString
     }
 }
