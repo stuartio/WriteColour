@@ -1,3 +1,13 @@
+<#
+.SYNOPSIS
+Convert string to coloured format
+.DESCRIPTION
+Takes a string using custom colour blocks (seee https://github.com/stuartio/writecolour) to ANSI escape sequences which can be used with regular printing functions such as Write-Host
+.PARAMETER InputObject
+Input string to convert
+.EXAMPLE
+Convert-ColourString "Hello, my name is |red|Inigo Montoya|!|"
+#>
 function Convert-ColourString {
     [Alias('Convert-ColorfulString')]
     [CmdletBinding()]

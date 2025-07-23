@@ -64,6 +64,20 @@ For example, if you wanted to write text in green, you could use _either one of_
 
 >Note: Colour formats are interchangeable, so you could use hex for a foreground colour, and a name or rgb numbers for a background colour, or vice-versa
 
+### Flags
+
+The following flags are supported:
+- b - Bold
+- f - Dim/Faint
+- i - Italic
+- u - Underline
+- B - Blinking
+- r - Inverse/Reverse
+- h - Hidden/Invisible
+- s - Strikethrough
+
+You can also use multiple flags in any order you wish.
+
 ## Examples
 
 1. Write your name in red
